@@ -4,7 +4,7 @@ export const handler: APIGatewayProxyHandler = async (_event: APIGatewayProxyEve
   try {
     const response = {
       statusCode: 200,
-      body: 'HELLO YOU ARE MY FRIEND!!!',
+      body: 'Hello world',
     };
     return response;
   } catch (err) {
