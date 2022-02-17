@@ -8,10 +8,10 @@
       "experimentalDecorators": true,
       "resolveJsonModule": true,
       "declaration": false,
-      "outDir": "dist/",
       "skipLibCheck": true,
+      "sourceMap": true,
+      "baseUrl": ".",
     },
-    "include": [
-      "."
-    ]
+    "exclude": ["node_modules", "dist", "coverage"],
+    "include": ["src"]
   }

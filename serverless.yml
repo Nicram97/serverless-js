@@ -1,0 +1,43 @@
+service: serverlessSetup
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: eu-west-1
+
+# functions
+functions:
+  hello:
+    handler: src/lambdas/hello.handler
+    events: # The events that trigger this function
+      - http: 
+          path: serverlessSetup/hello
+          method: get
+  goodbye:
+    handler: src/lambdas/goodbye.handler
+    events:
+      - http: 
+          path: serverlessSetup/goodbye
+          method: post
+  question:
+    handler: src/lambdas/question.handler
+    dependsOn: SNSQuestionEvent
+    events:
+      - sns:
+          arn: !Ref SNSQuestionEvent
+          topicName: question-event
+
+# Serverless plugins
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+# Resources your functions use
+resources:
+  Resources:
+    # SNS Topics
+    SNSQuestionEvent:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: Question Event Topic
+        TopicName: question-event
