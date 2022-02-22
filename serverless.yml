@@ -1,4 +1,9 @@
 service: serverlessSetup
+	
+package:
+  individually: true
+  patterns:
+    - '!node_modules/**'
 
 provider:
   name: aws

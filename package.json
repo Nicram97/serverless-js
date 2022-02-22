@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:aws:offline": "sls offline -s dev"
+    "start:aws:offline": "sls offline -s dev",
+    "serverless:package": "serverless package"
   },
   "repository": {
     "type": "git",
