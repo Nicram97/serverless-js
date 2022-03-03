@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start:aws:offline": "sls offline -s dev",
-    "serverless:package": "serverless package"
+    "serverless:package": "serverless package",
+    "serverless:package:webpack": "serverless webpack --out dist"
   },
   "repository": {
     "type": "git",
@@ -23,9 +24,18 @@
     "@types/serverless": "^3.0.0",
     "aws-lambda": "^1.0.7",
     "serverless": "^3.2.1",
+    "serverless-dynamodb-local": "^0.2.40",
     "serverless-offline": "^8.4.0",
     "serverless-plugin-typescript": "^2.1.1",
+    "ts-loader": "^9.2.7",
     "ts-node": "^10.5.0",
-    "typescript": "^4.5.5"
+    "tsconfig-paths-webpack-plugin": "^3.5.2",
+    "typescript": "^4.5.5",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/uuid": "^8.3.4",
+    "serverless-webpack": "^5.6.1",
+    "webpack": "^5.70.0"
   }
 }
