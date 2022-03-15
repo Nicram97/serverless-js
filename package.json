@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:aws:offline": "sls offline -s dev",
-    "serverless:package": "serverless package",
-    "serverless:package:webpack": "serverless webpack --out dist"
+    "serverless:offline": "sls offline",
+    "serverless:package": "serverless webpack"
   },
   "repository": {
     "type": "git",

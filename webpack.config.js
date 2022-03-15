@@ -4,7 +4,7 @@ const slsw = require('serverless-webpack');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
-  mode: 'production',
+  mode: slsw.lib.webpack.isLocal ? "development" : "production",
   entry: slsw.lib.entries,
   resolve: {
     plugins: [new TsconfigPathsPlugin({ configFile: 'tsconfig.build.json' })],
@@ -13,7 +13,7 @@ module.exports = {
   output: {
     libraryTarget: 'commonjs',
     path: path.join(__dirname, 'dist'),
-    filename: 'index.js',
+    filename: slsw.lib.webpack.isLocal ? '[name].js' : 'index.js'
   },
   target: 'node',
   module: {

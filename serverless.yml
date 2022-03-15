@@ -2,8 +2,7 @@ service: serverlessSetup
 	
 package:
   individually: true
-  patterns:
-    - '!node_modules/**'
+  
 
 provider:
   name: aws
@@ -34,9 +33,8 @@ functions:
 
 # Serverless plugins
 plugins:
-  - serverless-plugin-typescript
-  - serverless-offline
   - serverless-webpack
+  - serverless-offline
 
 
 # Resources your functions use
