@@ -9,13 +9,12 @@
             "request": "launch",
             "name": "Launch Serverless Offline",
             "program": "${workspaceFolder}/node_modules/serverless/bin/serverless",
-            "args": ["offline", "start", "--httpPort", "4000", "--noTimeout"],
+            "args": ["offline", "start", "--noTimeout"],
             "protocol": "inspector",
+            "outputCapture": "std",
+            "internalConsoleOptions": "openOnSessionStart",
             "runtimeExecutable": "node",
-            "env": {}, // in case env variables are needed
-            "windows": {
-                "program": "${workspaceFolder}/node_modules/serverless/bin/serverless"
-            }
+            "env": {} // in case env variables are needed
         }
     ]
 }

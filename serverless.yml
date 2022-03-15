@@ -7,7 +7,11 @@ package:
 provider:
   name: aws
   runtime: nodejs14.x
-  region: eu-west-1
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'eu-west-1'}
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    TASKS_TABLE: Tasks-${self:provider.stage}
 
 # functions
 functions:
@@ -30,12 +34,25 @@ functions:
       - sns:
           arn: !Ref SNSQuestionEvent
           topicName: question-event
+  createTask:
+    handler: src/lambdas/createTask.handler
+    events:
+      - http:
+          method: post
+          path: tasks
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASKS_TABLE}
+      
 
 # Serverless plugins
 plugins:
   - serverless-webpack
+  - serverless-iam-roles-per-function
+  - serverless-dynamodb-local
   - serverless-offline
-
 
 # Resources your functions use
 resources:
@@ -46,6 +63,20 @@ resources:
       Properties:
         DisplayName: Question Event Topic
         TopicName: question-event
+    TasksDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TASKS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        # AWS Free tier
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
 
 custom:
   webpack:
@@ -53,3 +84,12 @@ custom:
     includeModules: false # Node modules configuration for packaging
     packager: 'npm' # Packager that will be used to package your external modules
     excludeFiles: src/**/*.test.js # Provide a glob for files to ignore
+  serverless-offline:
+    httpPort: 3003
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+    stages:
+    - dev
