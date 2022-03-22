@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "serverless": "sls",
-    "serverless:offline": "export IS_OFFLINE=true && sls offline",
+    "serverless:offline": "export IS_OFFLINE=true && sls offline start",
     "serverless:package": "serverless webpack"
   },
   "repository": {

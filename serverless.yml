@@ -45,7 +45,39 @@ functions:
       Action:
         - dynamodb:PutItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASKS_TABLE}
-      
+  getTasks:
+    handler: src/lambdas/getTasks.handler
+    events:
+      - http:
+          method: get
+          path: tasks
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Scan
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASKS_TABLE}
+  updateTask:
+    handler: src/lambdas/updateTask.handler
+    events:
+      - http:
+          method: patch
+          path: tasks/{id}
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:UpdateItem
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASKS_TABLE}
+  deleteTask:
+    handler: src/lambdas/deleteTask.handler
+    events:
+      - http:
+          method: delete
+          path: tasks/{id}
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASKS_TABLE}
 
 # Serverless plugins
 plugins:
