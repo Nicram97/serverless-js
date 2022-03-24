@@ -8,7 +8,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     await taskService.deleteTaskById(id);
 
     return {
-        statusCode: 200,
-        body: 'hello'
+        statusCode: 204,
+        body: ''
     }
 }

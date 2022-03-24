@@ -14,7 +14,7 @@ module.exports = {
   output: {
     libraryTarget: 'commonjs',
     path: path.join(__dirname, 'dist'),
-    filename: slsw.lib.webpack.isLocal ? '[name].js' : 'index.js'
+    filename: '[name].js'
   },
   target: 'node',
   module: {

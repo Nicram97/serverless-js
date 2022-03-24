@@ -2,12 +2,11 @@ service: serverlessSetup
 	
 package:
   individually: true
-  
 
 provider:
   name: aws
   runtime: nodejs14.x
-  stage: ${opt:stage, 'dev'}
+  stage: ${opt:stage, 'development'}
   region: ${opt:region, 'eu-west-1'}
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
@@ -113,7 +112,7 @@ resources:
 custom:
   webpack:
     webpackConfig: 'webpack.config.js' # Name of webpack configuration file
-    includeModules: false # Node modules configuration for packaging
+    includeModules: true # Node modules configuration for packaging
     packager: 'npm' # Packager that will be used to package your external modules
     excludeFiles: src/**/*.test.js # Provide a glob for files to ignore
   serverless-offline:
@@ -124,4 +123,4 @@ custom:
       inMemory: true
       migrate: true
     stages:
-    - dev
+    - development
