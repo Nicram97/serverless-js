@@ -77,6 +77,18 @@ functions:
       Action:
         - dynamodb:DeleteItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASKS_TABLE}
+  sendEmail:
+    handler: src/lambdas/sendEmail.handler
+    events:
+      - http: 
+          path: serverlessSetup/sendEmail
+          method: post
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - ses:SendEmail
+        - ses:SendRawEmail
+      Resource: '*'
 
 # Serverless plugins
 plugins:
@@ -84,6 +96,7 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-dynamodb-local
   - serverless-offline
+  - serverless-offline-ses-v2
 
 # Resources your functions use
 resources:
@@ -124,3 +137,5 @@ custom:
       migrate: true
     stages:
     - development
+  serverless-offline-ses-v2:
+    port: 8005
