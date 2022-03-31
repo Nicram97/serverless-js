@@ -79,16 +79,26 @@ functions:
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASKS_TABLE}
   sendEmail:
     handler: src/lambdas/sendEmail.handler
+    dependsOn: SNSSendEmailEvent
     events:
       - http: 
           path: serverlessSetup/sendEmail
           method: post
+      - sns:
+          arn: !Ref SNSSendEmailEvent
+          topicName: email-event
     iamRoleStatements:
     - Effect: Allow
       Action:
         - ses:SendEmail
         - ses:SendRawEmail
       Resource: '*'
+  sendToSns:
+    handler: src/lambdas/sendToSns.handler
+    events:
+    - http:
+        method: post
+        path: serverlessSetup/sendToSns
 
 # Serverless plugins
 plugins:
@@ -96,6 +106,7 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-dynamodb-local
   - serverless-offline
+  - serverless-offline-sns
   - serverless-offline-ses-v2
 
 # Resources your functions use
@@ -107,6 +118,11 @@ resources:
       Properties:
         DisplayName: Question Event Topic
         TopicName: question-event
+    SNSSendEmailEvent:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: Send email Event Topic
+        TopicName: email-event
     TasksDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -139,3 +155,6 @@ custom:
     - development
   serverless-offline-ses-v2:
     port: 8005
+  serverless-offline-sns:
+    port: 4002
+    debug: false
