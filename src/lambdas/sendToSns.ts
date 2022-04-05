@@ -7,24 +7,21 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         const { region, accountId, topicName, message } = JSON.parse(event.body);
         const id = accountId ? accountId : '123456789012';
         const arn = `arn:aws:sns:${region}:${id}:${topicName}`;
-        const message1 = JSON.stringify({
+
+        // If you want to send email message should have structure like below and contain default property
+        const snsMessage = JSON.stringify({
             "default": JSON.stringify(message),
-            "email": "A message for email.",
-            "email-json": "A message for email (JSON).",
-            "http": "A message for HTTP.",
-            "https": "A message for HTTPS.",
-            "sqs": "A message for Amazon SQS."
         });
-        sns.publish({
-            Message: message1,
+
+        const result = await sns.publish({
+            Message: snsMessage,
             MessageStructure: 'json',
             TopicArn: arn,
-        }, (err, data) => {
-            console.log('test', err, data)
-        });
+        }).promise();
+
         return {
             statusCode: 200,
-            body: 'Request to sns has been sent'
+            body: JSON.stringify(result)
         }
     } catch (e) {
         throw new Error(`Cant send message to Sns ${e.message}`);
