@@ -33,6 +33,8 @@ functions:
       - sns:
           arn: !Ref SNSQuestionEvent
           topicName: question-event
+          # redrivePolicy:
+          #   deadLetterTargetRef: DeadLetterQueue
   createTask:
     handler: src/lambdas/createTask.handler
     events:
@@ -87,6 +89,18 @@ functions:
       - sns:
           arn: !Ref SNSSendEmailEvent
           topicName: email-event
+          # redrivePolicy:
+          #   deadLetterTargetRef: DeadLetterQueue
+  handleDLQ:
+    handler: src/lambdas/handleDLQ.handler
+    dependsOn: SNSSendEmailEvent
+    events:
+      - sqs:
+          # queueName: DeadLetterQueue
+          arn:
+            Fn::GetAtt:
+              - DeadLetterQueue
+              - Arn
     iamRoleStatements:
     - Effect: Allow
       Action:
@@ -99,6 +113,12 @@ functions:
     - http:
         method: post
         path: serverlessSetup/sendToSns
+  sendToSqs:
+    handler: src/lambdas/sendToSqs.handler
+    events:
+    - http:
+        method: post
+        path: serverlessSetup/sendToSqs
 
 # Serverless plugins
 plugins:
@@ -106,8 +126,17 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-dynamodb-local
   - serverless-offline
+  - serverless-offline-sqs
   - serverless-offline-sns
   - serverless-offline-ses-v2
+
+# SQS properties
+# constructs:
+#   jobs:
+#     type: queue
+#     worker:
+#       handler: src/lambdas/handleDLQ.handler
+
 
 # Resources your functions use
 resources:
@@ -137,6 +166,10 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+    DeadLetterQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: DeadLetterQueue
 
 custom:
   webpack:
@@ -148,7 +181,7 @@ custom:
     httpPort: 3003
   dynamodb:
     start:
-      port: 8000
+      port: 8001
       inMemory: true
       migrate: true
     stages:
@@ -156,5 +189,14 @@ custom:
   serverless-offline-ses-v2:
     port: 8005
   serverless-offline-sns:
-    port: 4002
+    port: 5002
     debug: false
+  serverless-offline-sqs:
+    autoCreate: true
+    debug: true                # create queue if not exists
+    apiVersion: '2012-11-05'
+    endpoint: http://0.0.0.0:9324
+    region: ${self:provider.region}
+    accessKeyId: root
+    secretAccessKey: root
+    skipCacheInvalidation: false
