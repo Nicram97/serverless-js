@@ -7,8 +7,9 @@ import { SNSHandler, SNSEvent, SNSEventRecord } from 'aws-lambda';
 export const handler: SNSHandler = async (event: SNSEvent) => {
   const records: SNSEventRecord[] = event.Records;
   // For the sake of this tutorial I am just using a fire and forget with this forEach.
-//    If you want to try and catch you can use await Promise.all or something
+  //    If you want to try and catch you can use await Promise.all or something
   records.forEach(record => {
     console.log('Message is: ', record.Sns.Message);
   });
+  
 };

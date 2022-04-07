@@ -9,7 +9,7 @@ npm run serverless:offline
 
 To deploy the app on AWS:
 ```
-npm run serverless remove -- -s development
+npm run deploy:dev
 ```
 
 REMEMBER TO ADD AWS Credentials before deployment
