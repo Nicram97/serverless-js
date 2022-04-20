@@ -7,7 +7,8 @@
     "serverless": "sls",
     "serverless:offline": "export IS_OFFLINE=true && sls offline start",
     "serverless:package": "serverless webpack",
-    "deploy:dev": "serverless deploy -s development"
+    "deploy:dev": "serverless deploy -s development",
+    "deploy:remove": "serverless remove"
   },
   "repository": {
     "type": "git",
@@ -21,30 +22,29 @@
   },
   "homepage": "https://github.com/Nicram97/serverless-js#readme",
   "dependencies": {
-    "@types/aws-lambda": "^8.10.92",
-    "@types/serverless": "^3.0.0",
     "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1102.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.92",
+    "@types/node": "^17.0.23",
+    "@types/serverless": "^3.0.0",
+    "@types/uuid": "^8.3.4",
     "aws-ses-v2-local": "^1.0.1",
-    "serverless": "^3.2.1",
+    "serverless": "^3.14.0",
+    "serverless-dynamodb-local": "^0.2.40",
+    "serverless-iam-roles-per-function": "^3.2.0",
     "serverless-offline": "^8.4.0",
+    "serverless-offline-ses-v2": "^1.0.0",
     "serverless-offline-sns": "^0.76.0",
     "serverless-offline-sqs": "^6.0.0",
     "serverless-plugin-typescript": "^2.1.1",
+    "serverless-webpack": "^5.6.1",
     "ts-loader": "^9.2.7",
     "ts-node": "^10.5.0",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "typescript": "^4.5.5",
-    "uuid": "^8.3.2"
-  },
-  "devDependencies": {
-    "@types/node": "^17.0.23",
-    "@types/uuid": "^8.3.4",
-    "serverless-dynamodb-local": "^0.2.40",
-    "serverless-iam-roles-per-function": "^3.2.0",
-    "serverless-lift": "^1.14.0",
-    "serverless-offline-ses-v2": "^1.0.0",
-    "serverless-webpack": "^5.6.1",
     "webpack": "^5.70.0"
   }
 }

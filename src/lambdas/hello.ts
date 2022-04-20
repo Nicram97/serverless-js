@@ -9,9 +9,6 @@ export const handler: APIGatewayProxyHandler = async (_event: APIGatewayProxyEve
     };
     return response;
   } catch (err) {
-    return {
-      statusCode: 500,
-      body: 'An error occurred',
-    };
+    throw new Error(err.message);
   }
 };

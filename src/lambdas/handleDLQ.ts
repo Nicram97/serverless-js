@@ -1,6 +1,5 @@
-import { SQSBatchItemFailure, SQSBatchResponse, SQSHandler, SQSRecord } from "aws-lambda";
-
-export const handler: SQSHandler = async (event): Promise<SQSBatchResponse> => {
+import { SQSBatchItemFailure, SQSBatchResponse, SQSEvent, SQSHandler, SQSRecord } from "aws-lambda";
+export const handler: SQSHandler = async (event: SQSEvent): Promise<SQSBatchResponse> => {
     console.log('Error handler', event)
     const records: SQSRecord[] = event.Records;
     const sqsBatchResponse: SQSBatchResponse = {batchItemFailures: []};

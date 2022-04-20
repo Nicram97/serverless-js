@@ -1,8 +1,4 @@
 service: serverlessSetup
-	
-package:
-  individually: true
-
 provider:
   name: aws
   runtime: nodejs14.x
@@ -11,30 +7,47 @@ provider:
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     TASKS_TABLE: Tasks-${self:provider.stage}
+package:
+  individually: true
 
 # functions
 functions:
+
   hello:
     handler: src/lambdas/hello.handler
     events: # The events that trigger this function
       - http: 
           path: serverlessSetup/hello
           method: get
+
   goodbye:
     handler: src/lambdas/goodbye.handler
     events:
       - http: 
           path: serverlessSetup/goodbye
           method: post
+
   question:
     handler: src/lambdas/question.handler
-    dependsOn: SNSQuestionEvent
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+    destinations:
+      onFailure: ${self:custom.failureArn}
     events:
       - sns:
           arn: !Ref SNSQuestionEvent
           topicName: question-event
-          redrivePolicy:
-            deadLetterTargetRef: DeadLetterQueue
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sns:Subscribe
+        - sns:Publish
+      Resource: ${self:custom.snsQuestionArn}
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+      Resource: ${self:custom.failureArn}
+
   createTask:
     handler: src/lambdas/createTask.handler
     events:
@@ -46,6 +59,7 @@ functions:
       Action:
         - dynamodb:PutItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASKS_TABLE}
+
   getTasks:
     handler: src/lambdas/getTasks.handler
     events:
@@ -57,6 +71,7 @@ functions:
       Action:
         - dynamodb:Scan
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASKS_TABLE}
+
   updateTask:
     handler: src/lambdas/updateTask.handler
     events:
@@ -68,6 +83,7 @@ functions:
       Action:
         - dynamodb:UpdateItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASKS_TABLE}
+
   deleteTask:
     handler: src/lambdas/deleteTask.handler
     events:
@@ -79,6 +95,7 @@ functions:
       Action:
         - dynamodb:DeleteItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TASKS_TABLE}
+
   sendEmail:
     handler: src/lambdas/sendEmail.handler
     dependsOn: SNSSendEmailEvent
@@ -89,13 +106,20 @@ functions:
       - sns:
           arn: !Ref SNSSendEmailEvent
           topicName: email-event
-          redrivePolicy:
-            deadLetterTargetRef: DeadLetterQueue
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - ses:SendEmail
+      Resource: arn:aws:ses:${self:provider.region}:${aws:accountId}:*
+
   handleDLQ:
     handler: src/lambdas/handleDLQ.handler
-    dependsOn: SNSSendEmailEvent
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
     events:
       - sqs:
+          batchSize: 1 # in reality you would have your lambda batch process but setting to 1 for example
+          maximumBatchingWindow: 1
           arn:
             Fn::GetAtt:
               - DeadLetterQueue
@@ -103,32 +127,85 @@ functions:
     iamRoleStatements:
     - Effect: Allow
       Action:
-        - ses:SendEmail
-        - ses:SendRawEmail
-      Resource: '*'
+        - sqs:ReceiveMessage
+      Resource: ${self:custom.failureArn}
+
   sendToSns:
     handler: src/lambdas/sendToSns.handler
     events:
     - http:
         method: post
         path: serverlessSetup/sendToSns
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sns:Publish
+      Resource: ${self:custom.allSnsArn}
+
   sendToSqs:
     handler: src/lambdas/sendToSqs.handler
     events:
     - http:
         method: post
         path: serverlessSetup/sendToSqs
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+      Resource: ${self:custom.allSqsArn}
 
-# Serverless plugins
-plugins:
-  - serverless-webpack
-  - serverless-iam-roles-per-function
-  - serverless-dynamodb-local
-  - serverless-offline
-  - serverless-offline-sqs
-  - serverless-offline-sns
-  - serverless-offline-ses-v2
+  receiver:
+    handler: src/lambdas/receiverSqs.handler
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+    events:
+      - sqs:
+          batchSize: 1 # in reality you would have your lambda batch process but setting to 1 for example
+          maximumBatchingWindow: 1
+          arn:
+            Fn::GetAtt:
+              - MyQueue
+              - Arn
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sqs:ReceiveMessage
+      Resource: ${self:custom.receiverArn}
 
+custom:
+  failureArn: arn:aws:sqs:${self:provider.region}:${aws:accountId}:deadLetterQueue
+  receiverArn: arn:aws:sqs:${self:provider.region}:${aws:accountId}:MyQueue
+  allSqsArn: arn:aws:sqs:${self:provider.region}:${aws:accountId}:*
+  allSnsArn: arn:aws:sns:${self:provider.region}:${aws:accountId}:*
+  snsQuestionArn: arn:aws:sns:${self:provider.region}:${aws:accountId}:question-event
+  webpack:
+    webpackConfig: 'webpack.config.js' # Name of webpack configuration file
+    includeModules: true # Node modules configuration for packaging
+    packager: 'npm' # Packager that will be used to package your external modules
+    excludeFiles: src/**/*.test.js # Provide a glob for files to ignore
+  serverless-offline:
+    httpPort: 3003
+  dynamodb:
+    start:
+      port: 8001
+      inMemory: true
+      migrate: true
+    stages:
+    - development
+  serverless-offline-ses-v2:
+    port: 8005
+  serverless-offline-sns:
+    port: 4002
+    debug: false
+  serverless-offline-sqs:
+    autoCreate: true
+    debug: true                # create queue if not exists
+    apiVersion: '2012-11-05'
+    endpoint: http://0.0.0.0:9324
+    region: ${self:provider.region}
+    accessKeyId: root
+    secretAccessKey: root
+    skipCacheInvalidation: false
 
 # Resources your functions use
 resources:
@@ -158,37 +235,24 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+
+    MyQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: MyQueue
+
     DeadLetterQueue:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: DeadLetterQueue
+        QueueName: deadLetterQueue
 
-custom:
-  webpack:
-    webpackConfig: 'webpack.config.js' # Name of webpack configuration file
-    includeModules: true # Node modules configuration for packaging
-    packager: 'npm' # Packager that will be used to package your external modules
-    excludeFiles: src/**/*.test.js # Provide a glob for files to ignore
-  serverless-offline:
-    httpPort: 3003
-  dynamodb:
-    start:
-      port: 8001
-      inMemory: true
-      migrate: true
-    stages:
-    - development
-  serverless-offline-ses-v2:
-    port: 8005
-  serverless-offline-sns:
-    port: 4002
-    debug: false
-  serverless-offline-sqs:
-    autoCreate: true
-    debug: true                # create queue if not exists
-    apiVersion: '2012-11-05'
-    endpoint: http://0.0.0.0:9324
-    region: ${self:provider.region}
-    accessKeyId: root
-    secretAccessKey: root
-    skipCacheInvalidation: false
+
+# Serverless plugins
+plugins:
+  - serverless-webpack
+  - serverless-iam-roles-per-function
+  - serverless-dynamodb-local
+  - serverless-offline
+  - serverless-offline-sqs
+  - serverless-offline-sns
+  - serverless-offline-ses-v2
