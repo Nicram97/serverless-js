@@ -1,0 +1,250 @@
+{
+	"info": {
+		"_postman_id": "02dd20bd-c05f-4efa-9caf-6f3d119b0cda",
+		"name": "serverless-js",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getTasks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/development/tasks",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"development",
+						"tasks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createTask",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"clean up\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/development/tasks",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"development",
+						"tasks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateTask",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"updated task\",\n    \"done\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/development/tasks/ce620727-fe1f-462b-8d62-ec7757c3ba55",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"development",
+						"tasks",
+						"ce620727-fe1f-462b-8d62-ec7757c3ba55"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteTask",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/development/tasks/ce620727-fe1f-462b-8d62-ec7757c3ba55",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"development",
+						"tasks",
+						"ce620727-fe1f-462b-8d62-ec7757c3ba55"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "helloWorld",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/development/serverlessSetup/hello",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"development",
+						"serverlessSetup",
+						"hello"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "goodbye",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"TestName\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/development/serverlessSetup/goodbye",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"development",
+						"serverlessSetup",
+						"goodbye"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sendEmail",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"toAddresses\": [\"text@something.com\"],\n    \"text\": \"majaja hi maja ha majja ha ha\",\n    \"subject\": \"test subject\",\n    \"fromAddress\": \"secret@something.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/development/serverlessSetup/sendEmail",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"development",
+						"serverlessSetup",
+						"sendEmail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sendToSns",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"region\": \"eu-west-1\",\n    \"accountId\": \"123456789012\",\n    \"topicName\": \"question-event\",\n    \"message\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/development/serverlessSetup/sendToSns",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"development",
+						"serverlessSetup",
+						"sendToSns"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sendToSqs",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"DelaySeconds\": 10,\n    \"MessageAttributes\": {\n        \"Title\": {\n            \"DataType\": \"String\",\n            \"StringValue\": \"The Whistler\"\n        },\n        \"Author\": {\n            \"DataType\": \"String\",\n            \"StringValue\": \"John Grisham\"\n        },\n        \"WeeksOn\": {\n            \"DataType\": \"Number\",\n            \"StringValue\": \"6\"\n        }\n    },\n    \"MessageBody\": \"Im speed\",\n    \"QueueUrl\": \"http://localhost:9324/queue/MyQueue\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/development/serverlessSetup/sendToSqs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"development",
+						"serverlessSetup",
+						"sendToSqs"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
