@@ -30,3 +30,5 @@ To use SQS offline You have to use elasticMQ image (https://github.com/softwarem
 To test serverless offline there is postman collection available in postman folder. If You want to test Api Gateway just switch URL and request properties/bodies etc.
 
 To send email from AWS in AWS SES section add email to verified identities. Then adjust request body.
+
+DLQ (dead letter queue) - Works only deployed + only for async methods (SNS, SQS etc.)
