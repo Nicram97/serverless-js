@@ -20,6 +20,13 @@ functions:
           path: serverlessSetup/hello
           method: get
 
+  nestJsHello:
+    handler: src/lambdas/nestLambda/nestHello.handler
+    events:
+      - http:
+          path: serverlessSetup/nestHello
+          method: get
+
   goodbye:
     handler: src/lambdas/goodbye.handler
     events:
@@ -179,7 +186,7 @@ custom:
   allSnsArn: arn:aws:sns:${self:provider.region}:${aws:accountId}:*
   snsQuestionArn: arn:aws:sns:${self:provider.region}:${aws:accountId}:question-event
   webpack:
-    webpackConfig: 'webpack.config.js' # Name of webpack configuration file
+    webpackConfig: 'webpack.config.ts' # Name of webpack configuration file
     includeModules: true # Node modules configuration for packaging
     packager: 'npm' # Packager that will be used to package your external modules
     excludeFiles: src/**/*.test.js # Provide a glob for files to ignore

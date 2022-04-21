@@ -11,7 +11,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3003/development/tasks",
+					"raw": "http://localhost:3003/development/serverlessSetup/nestHello",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -19,7 +19,8 @@
 					"port": "3003",
 					"path": [
 						"development",
-						"tasks"
+						"serverlessSetup",
+						"nestHello"
 					]
 				}
 			},
