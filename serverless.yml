@@ -178,6 +178,42 @@ functions:
       Action:
         - sqs:ReceiveMessage
       Resource: ${self:custom.receiverArn}
+  
+  helloThere:
+    handler: src/lambdas/stepFunctions/helloThere.handler
+
+  generalKenobi:
+    handler: src/lambdas/stepFunctions/generalKenobi.handler
+
+  startSF:
+    handler: src/lambdas/stepFunctions/startSF.handler
+    events:
+      - http:
+          path: startSF
+          method: post
+
+stepFunctions:
+  stateMachines:
+    WaitMachine:
+      type: EXPRESS
+      definition:
+        Comment: 'Step function example!'
+        StartAt: FirstState
+        States:
+          FirstState:
+            Type: Task
+            Resource:
+              Fn:GetAtt: [helloThere, Arn]
+            Next: wait_using_seconds
+          wait_using_seconds:
+            Type: Wait
+            Seconds: 10
+            Next: FinalState
+          FinalState:
+            Type: Task
+            Resource:
+              Fn:GetAtt: [generalKenobi, Arn]
+            End: true
 
 custom:
   failureArn: arn:aws:sqs:${self:provider.region}:${aws:accountId}:deadLetterQueue
@@ -194,13 +230,13 @@ custom:
     httpPort: 3003
   dynamodb:
     start:
-      port: 8001
+      port: 8078
       inMemory: true
       migrate: true
     stages:
     - development
   serverless-offline-ses-v2:
-    port: 8005
+    port: 8064
   serverless-offline-sns:
     port: 4002
     debug: false
@@ -213,6 +249,12 @@ custom:
     accessKeyId: root
     secretAccessKey: root
     skipCacheInvalidation: false
+  stepFunctionsLocal:
+    accountId: ${aws:accountId}
+    region: ${self:provider.region}
+    TaskResourceMapping:
+      FirstState: arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:helloThere
+      FinalState: arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:generalKenobi
 
 # Resources your functions use
 resources:
@@ -253,13 +295,15 @@ resources:
       Properties:
         QueueName: deadLetterQueue
 
-
 # Serverless plugins
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
-  - serverless-dynamodb-local
+  - serverless-step-functions
+  - serverless-step-functions-local
+  - serverless-offline-lambda
   - serverless-offline
+  - serverless-dynamodb-local
   - serverless-offline-sqs
   - serverless-offline-sns
   - serverless-offline-ses-v2

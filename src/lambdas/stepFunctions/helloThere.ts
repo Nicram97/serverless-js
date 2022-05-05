@@ -3,7 +3,6 @@ import {
   APIGatewayProxyHandler,
   APIGatewayProxyResult,
 } from 'aws-lambda';
-import { v4 as uuidv4 } from 'uuid';
 
 export const handler: APIGatewayProxyHandler = async (
   _event: APIGatewayProxyEvent,
@@ -11,7 +10,7 @@ export const handler: APIGatewayProxyHandler = async (
   try {
     const response = {
       statusCode: 200,
-      body: `Hello world ${uuidv4()}`,
+      body: 'Hello there!',
     };
     return response;
   } catch (err) {
