@@ -7,8 +7,9 @@ export const handler = async (
   try {
     const { machineName } = JSON.parse(event.body);
     const stepFunctions = getStepFunctionsClient();
-    const stateMachineArn =
-      process.env[`OFFLINE_STEP_FUNCTIONS_ARN_${machineName}`];
+    const stateMachineArn = process.env.IS_OFFLINE
+      ? process.env[`OFFLINE_STEP_FUNCTIONS_ARN_${machineName}`]
+      : `arn:aws:states:${process.env.MY_AWS_REGION}:${process.env.MY_AWS_ACCOUNT_ID}:stateMachine:${machineName}`;
 
     const params: AWS.StepFunctions.StartExecutionInput = {
       stateMachineArn,

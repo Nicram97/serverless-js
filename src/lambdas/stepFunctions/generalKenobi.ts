@@ -5,9 +5,10 @@ import {
 } from 'aws-lambda';
 
 export const handler: APIGatewayProxyHandler = async (
-  _event: APIGatewayProxyEvent,
+  event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
   try {
+    console.log('event', event);
     const response = {
       statusCode: 200,
       body: 'General Kenobi, I ve been expecting You!',

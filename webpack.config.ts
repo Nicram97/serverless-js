@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import * as path from 'path';
 import * as wp from 'webpack';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
@@ -24,20 +23,23 @@ const config: wp.Configuration = {
   target: 'node',
   stats: 'minimal',
   externals: [],
-  entry: Object.keys(slsw.lib.entries).reduce(
-    (entries: { [x: string]: any }, key) => {
-      entries[key] = ['./source-map-install.js', slsw.lib.entries[key]];
-      return entries;
-    },
-    {},
-  ),
+  entry: slsw.lib.webpack.isLocal ?
+    Object.keys(slsw.lib.entries).reduce(
+      (entries: { [x: string]: any }, key) => {
+        entries[key] = ['./source-map-install.js', slsw.lib.entries[key]];
+        return entries;
+      },
+      {},
+    )
+    :
+    slsw.lib.entries,
   output: {
     libraryTarget: 'commonjs2',
     path: path.join(__dirname, '.webpack'),
     filename: '[name].js',
   },
   resolve: {
-    plugins: [new TsconfigPathsPlugin({ configFile: 'tsconfig.build.json' })],
+    plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.build.json' })],
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
   },
   module: {

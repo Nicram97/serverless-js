@@ -7,6 +7,8 @@ provider:
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     TASKS_TABLE: Tasks-${self:provider.stage}
+    MY_AWS_REGION: ${self:provider.region}
+    MY_AWS_ACCOUNT_ID: ${aws:accountId}
 package:
   individually: true
 
@@ -191,11 +193,15 @@ functions:
       - http:
           path: startSF
           method: post
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - states:StartExecution
+      Resource: arn:aws:states:*:*:stateMachine:*
 
 stepFunctions:
   stateMachines:
     WaitMachine:
-      type: EXPRESS
       definition:
         Comment: 'Step function example!'
         StartAt: FirstState
@@ -203,7 +209,7 @@ stepFunctions:
           FirstState:
             Type: Task
             Resource:
-              Fn:GetAtt: [helloThere, Arn]
+              Fn::GetAtt: [helloThere, Arn]
             Next: wait_using_seconds
           wait_using_seconds:
             Type: Wait
@@ -212,7 +218,7 @@ stepFunctions:
           FinalState:
             Type: Task
             Resource:
-              Fn:GetAtt: [generalKenobi, Arn]
+              Fn::GetAtt: [generalKenobi, Arn]
             End: true
 
 custom:

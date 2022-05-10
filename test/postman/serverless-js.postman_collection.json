@@ -11,7 +11,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3003/development/serverlessSetup/nestHello",
+					"raw": "http://localhost:3003/development/tasks",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -19,8 +19,7 @@
 					"port": "3003",
 					"path": [
 						"development",
-						"serverlessSetup",
-						"nestHello"
+						"tasks"
 					]
 				}
 			},
@@ -242,6 +241,56 @@
 						"development",
 						"serverlessSetup",
 						"sendToSqs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "startSF",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"machineName\": \"WaitMachine\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/development/startSF",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"development",
+						"startSF"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "nestJsHelloWorld",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/development/serverlessSetup/nestHello",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"development",
+						"serverlessSetup",
+						"nestHello"
 					]
 				}
 			},
