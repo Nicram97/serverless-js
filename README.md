@@ -7,6 +7,7 @@ This project provides basic serverless configuration.
 * *SQS*
 * *SES*
 * *DynamoDB*
+* *StepFunctions*
 
 
 
@@ -26,6 +27,8 @@ REMEMBER TO ADD AWS Credentials before deployment
 In .vscode there is launch.json configuration which enables http lambdas debugging. To mock/play with sns event offline You need to install https://www.npmjs.com/package/serverless-offline-sns and configure it properly.
 
 To use SQS offline You have to use elasticMQ image (https://github.com/softwaremill/elasticmq)
+
+To use DynamoDb offline follow instructions from https://www.serverless.com/plugins/serverless-dynamodb-local and install database locally.
 
 To test serverless offline there is postman collection available in postman folder. If You want to test Api Gateway just switch URL and request properties/bodies etc.
 
