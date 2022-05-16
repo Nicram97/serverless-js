@@ -24,12 +24,13 @@
     "@nestjs/common": "^8.4.4",
     "@nestjs/core": "^8.4.4",
     "@nestjs/platform-express": "^8.4.4",
+    "@serverless/typescript": "^3.17.0",
     "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1129.0",
-    "uuid": "^8.3.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.5.5"
+    "rxjs": "^7.5.5",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.2.5",
