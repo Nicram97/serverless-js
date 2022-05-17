@@ -55,7 +55,7 @@ const serverlessConfiguration: CustomServerless = {
                 },
             ],
         },
-        
+
         question: {
             handler: 'src/lambdas/question.handler',
             maximumRetryAttempts: 0,
@@ -309,6 +309,17 @@ const serverlessConfiguration: CustomServerless = {
             ],
         },
 
+        publishToEventBus: {
+            handler: 'src/lambdas/eventBridge/publishToEventBus.handler',
+            events: [
+                {
+                    http: {
+                        path: 'publishToEventBus',
+                        method: 'post',
+                    }
+                },
+            ],
+        },
 
     },
     stepFunctions: {
@@ -380,7 +391,7 @@ const serverlessConfiguration: CustomServerless = {
 
         ['serverless-offline-sqs']: {
             autoCreate: true,
-            debug: true  ,              // create queue if not exists
+            debug: true,              // create queue if not exists
             apiVersion: '2012-11-05',
             endpoint: 'http://0.0.0.0:9324',
             region: '${self:provider.region}',
@@ -396,6 +407,18 @@ const serverlessConfiguration: CustomServerless = {
                 FirstState: 'arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:helloThere',
                 FinalState: 'arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:generalKenobi',
             },
+        },
+
+        ['serverless-offline-aws-eventbridge']: {
+            port: 4010,
+            mockEventBridgeServer: true,
+            hostname: '127.0.0.1',
+            pubSubPort: 4011,
+            debug: false,
+            account: '',
+            maximumRetryAttempts: 1,
+            retryDelayMs: 500,
+            payloadSizeLimit: '10mb'
         },
     },
 
@@ -459,6 +482,7 @@ const serverlessConfiguration: CustomServerless = {
         'serverless-step-functions-local',
         'serverless-offline-lambda',
         'serverless-offline',
+        'serverless-offline-aws-eventbridge',
         'serverless-dynamodb-local',
         'serverless-offline-sqs',
         'serverless-offline-sns',
