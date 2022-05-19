@@ -247,6 +247,27 @@
 			"response": []
 		},
 		{
+			"name": "nestJsHelloWorld",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/development/serverlessSetup/nestHello",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"development",
+						"serverlessSetup",
+						"nestHello"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "startSF",
 			"request": {
 				"method": "POST",
@@ -276,12 +297,21 @@
 			"response": []
 		},
 		{
-			"name": "nestJsHelloWorld",
+			"name": "publishToEventBus",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"eventBusName\": \"testBus\",\n    \"source\": \"NBP\",\n    \"detailType\": \"user\",\n    \"detail\": {\n        \"username\": \"Mike Rich\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "http://localhost:3003/development/serverlessSetup/nestHello",
+					"raw": "http://localhost:3003/development/publishToEventBus",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -289,8 +319,7 @@
 					"port": "3003",
 					"path": [
 						"development",
-						"serverlessSetup",
-						"nestHello"
+						"publishToEventBus"
 					]
 				}
 			},
