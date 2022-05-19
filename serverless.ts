@@ -319,6 +319,78 @@ const serverlessConfiguration: CustomServerless = {
                     }
                 },
             ],
+            // @ts-expect-error
+            iamRoleStatements: [
+                {
+                    Effect: 'Allow',
+                    Action: ['events:PutEvents'],
+                    Resource: 'arn:aws:events:${self:provider.region}:${aws:accountId}:*'
+                },
+            ],
+        },
+
+        consumer1: {
+            handler: 'src/lambdas/eventBridge/consumer1.handler',
+            events: [
+                {
+                    eventBridge: {
+                        eventBus: 'testBus',
+                        pattern: {
+                            source: [
+                                'FRB'
+                            ],
+                        }
+                    },
+                },
+            ],
+        },
+
+        consumer2: {
+            handler: 'src/lambdas/eventBridge/consumer2.handler',
+            events: [
+                {
+                    eventBridge: {
+                        eventBus: 'testBus',
+                        pattern: {
+                            source: [
+                                'FRB'
+                            ]
+                        }
+                    },
+                },
+            ],
+        },
+
+        consumer3: {
+            handler: 'src/lambdas/eventBridge/consumer3.handler',
+            events: [
+                {
+                    eventBridge: {
+                        eventBus: 'testBus',
+                        pattern: {
+                            source: [
+                                'NBP'
+                            ]
+                        }
+                    },
+                },
+            ],
+        },
+
+        consumer4: {
+            handler: 'src/lambdas/eventBridge/consumer4.handler',
+            events: [
+                {
+                    eventBridge: {
+                        eventBus: 'testBus',
+                        pattern: {
+                            source: [
+                                'NBP'
+                            ]
+                        }
+                    },
+                },
+            ],
         },
 
     },
